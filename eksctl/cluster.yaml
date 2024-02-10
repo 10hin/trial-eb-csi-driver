@@ -1,0 +1,65 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: trial-ebs-csi-driver
+  region: ap-northeast-1
+  version: '1.25'
+  tags:
+    Purpose: TrialEBSCSIDriver
+
+availabilityZones:
+  - ap-northeast-1c
+  - ap-northeast-1d
+  - ap-northeast-1a
+
+iam:
+  withOIDC: true
+  serviceAccounts:
+    - metadata:
+        name: ebs-csi-controller-sa
+        namespace: kube-system
+      attachPolicyARNs:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy'
+      tags:
+        Purpose: TrialEBSCSIDriver
+
+managedNodeGroups:
+  - name: apne1-az1-default
+    instanceType: c5.large
+    # instanceType: c7i.large
+    availabilityZones:
+      - ap-northeast-1c
+    desiredCapacity: 1
+    updateConfig:
+      maxUnavailable: 1
+    tags:
+      Purpose: TrialEBSCSIDriver
+  - name: apne1-az2-default
+    instanceType: c5.large
+    # instanceType: c7i.large
+    availabilityZones:
+      - ap-northeast-1d
+    desiredCapacity: 1
+    updateConfig:
+      maxUnavailable: 1
+    tags:
+      Purpose: TrialEBSCSIDriver
+  - name: apne1-az4-default
+    instanceType: c5.large
+    # instanceType: c7i.large
+    availabilityZones:
+      - ap-northeast-1a
+    desiredCapacity: 1
+    updateConfig:
+      maxUnavailable: 1
+    tags:
+      Purpose: TrialEBSCSIDriver
+
+fargateProfiles:
+  - name: default
+    selectors:
+      - namespace: default
+      - namespace: kube-system
+    tags:
+      Purpose: TrialEBSCSIDriver

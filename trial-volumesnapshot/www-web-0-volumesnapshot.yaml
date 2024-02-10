@@ -1,0 +1,8 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: www-web-0-0
+spec:
+  volumeSnapshotClassName: ebs
+  source:
+    persistentVolumeClaimName: www-web-0
